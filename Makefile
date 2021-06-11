@@ -209,7 +209,7 @@ container-runtime-login: ## Log in into the Docker repository
 .PHONY: container-runtime-build
 container-runtime-build: check-env deepcopy-gen ## Build the container
 	@echo "+ $@"
-	$(CONTAINER_RUNTIME_COMMAND) build \
+	$(CONTAINER_RUNTIME_COMMAND) buildx build \
 	--build-arg GO_VERSION=$(GO_VERSION) \
 	--build-arg CTIMEVAR="$(CTIMEVAR)" \
 	-t $(DOCKER_REGISTRY):$(GITCOMMIT) . \
