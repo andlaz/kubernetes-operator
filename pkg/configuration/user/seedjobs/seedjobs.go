@@ -402,6 +402,10 @@ func (s *seedJobs) createAgent(jenkinsClient jenkinsclient.Jenkins, k8sClient cl
 	return nil
 }
 
+func agentAdditionalEnvVars(jenkins *v1alpha2.Jenkins) []corev1.EnvVar {
+	return jenkins.Spec.SeedAgent.Env
+}
+
 func agentDeploymentName(jenkins v1alpha2.Jenkins, agentName string) string {
 	return fmt.Sprintf("%s-%s", agentName, jenkins.Name)
 }
@@ -446,7 +450,7 @@ func agentDeployment(jenkins *v1alpha2.Jenkins, namespace string, agentName stri
 						{
 							Name:  "jnlp",
 							Image: "jenkins/inbound-agent:4.9-1",
-							Env: []corev1.EnvVar{
+							Env: append([]corev1.EnvVar{
 								{
 									Name: "JENKINS_TUNNEL",
 									Value: fmt.Sprintf("%s:%d",
@@ -472,7 +476,7 @@ func agentDeployment(jenkins *v1alpha2.Jenkins, namespace string, agentName stri
 									Name:  "JENKINS_AGENT_WORKDIR",
 									Value: homeVolumePath,
 								},
-							},
+							}, agentAdditionalEnvVars(jenkins)...),
 							VolumeMounts: []corev1.VolumeMount{
 								{
 									Name:      homeVolumeName,

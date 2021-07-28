@@ -13,6 +13,9 @@ type JenkinsSpec struct {
 	// Every single change here requires a pod restart.
 	Master JenkinsMaster `json:"master"`
 
+	// +optional
+	SeedAgent JenkinsSeedJobAgent `json:"seedAgent,omitempty"`
+
 	// SeedJobs defines list of Jenkins Seed Job configurations
 	// More info: https://jenkinsci.github.io/kubernetes-operator/docs/getting-started/latest/configuration#configure-seed-jobs-and-pipelines
 	// +optional
@@ -256,6 +259,12 @@ type Plugin struct {
 	Version string `json:"version"`
 	// DownloadURL is the custom url from where plugin has to be downloaded.
 	DownloadURL string `json:"downloadURL,omitempty"`
+}
+
+type JenkinsSeedJobAgent struct {
+	// List of environment variables to set in the container.
+	// +optional
+	Env []corev1.EnvVar `json:"env,omitempty"`
 }
 
 // JenkinsMaster defines the Jenkins master pod attributes and plugins,
