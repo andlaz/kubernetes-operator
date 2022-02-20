@@ -219,6 +219,26 @@ func validateUsernamePasswordSecret(secret v1.Secret) []string {
 	return messages
 }
 
+func validateGithubAppSecret(secret v1.Secret) []string {
+	var messages []string
+	appid, exists := secret.Data[AppIDSecretKey]
+	if !exists {
+		messages = append(messages, fmt.Sprintf("required data '%s' not found in secret '%s'", UsernameSecretKey, secret.ObjectMeta.Name))
+	}
+	if len(appid) == 0 {
+		messages = append(messages, fmt.Sprintf("required data '%s' is empty in secret '%s'", UsernameSecretKey, secret.ObjectMeta.Name))
+	}
+	pkey, exists := secret.Data[PrivateKeySecretKey]
+	if !exists {
+		messages = append(messages, fmt.Sprintf("required data '%s' not found in secret '%s'", PasswordSecretKey, secret.ObjectMeta.Name))
+	}
+	if len(pkey) == 0 {
+		messages = append(messages, fmt.Sprintf("required data '%s' is empty in secret '%s'", PasswordSecretKey, secret.ObjectMeta.Name))
+	}
+
+	return messages
+}
+
 func validatePrivateKey(privateKey string) error {
 	_, err := ssh.ParseRawPrivateKey([]byte(privateKey))
 	if err != nil {
